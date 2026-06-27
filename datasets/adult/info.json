@@ -1,0 +1,21 @@
+{
+    "cat_cols": [
+        "race",
+        "marital-status",
+        "education",
+        "relationship",
+        "occupation",
+        "native-country",
+        "salary",
+        "workclass",
+        "sex"
+    ],
+    "num_cols": [
+        "fnlwgt",
+        "capital-loss",
+        "age",
+        "education-num",
+        "capital-gain",
+        "hours-per-week"
+    ]
+}

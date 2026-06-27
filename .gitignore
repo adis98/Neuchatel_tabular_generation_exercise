@@ -2,9 +2,11 @@
 __pycache__/
 *.py[codz]
 *$py.class
-
+.idea/
 # C extensions
 *.so
+*.png
+.DS_Store
 
 # Distribution / packaging
 .Python
