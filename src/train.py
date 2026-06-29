@@ -80,24 +80,27 @@ def main(args):
             """Forward noising"""
             sigmas = torch.tensor(corrected_sigmas[indices], dtype=torch.float32).to(device)
             sigmas_expanded = sigmas.repeat_interleave(replica_counts, dim=1)
-            c_skip = 1 / (1 + sigmas_expanded ** 2)
-            # INCORRECT
-            # c_skip = 1/sigmas_expanded
+
+            """THE LINE BELOW IS INCORRECT; CORRECT IT!"""
+            c_skip = 1/sigmas_expanded
+
             c_out = sigmas_expanded / ((1 + sigmas_expanded ** 2).sqrt())  # sqrt(1-alpha bar t)
             batch_noised = (batch + epsilons * sigmas_expanded).to(device)
             outs = model(torch.sqrt(c_skip) * batch_noised, timesteps_t)
             cont_preds = c_skip[:, :num_dim] * batch_noised[:, :num_dim] + c_out[:, :num_dim] * outs[:, :num_dim]
             x0_pred = torch.concat([cont_preds, outs[:, num_dim:]], dim=1)
-            loss = criterion1(x0_pred[:, :num_dim], batch[:, :num_dim])
-            # INCORRECT
-            # loss = criterion1(x0_pred[:, :num_dim], batch_noised[:, :num_dim])
+
+            """THE LINE BELOW IS INCORRECT; CORRECT IT!"""
+            loss = criterion1(x0_pred[:, :num_dim], batch_noised[:, :num_dim])
+
             cat_chunks_pred = torch.split(outs[:, num_dim:], cat_feature_sizes, dim=-1)
             cat_chunks_gt = torch.split(batch[:, num_dim:], cat_feature_sizes, dim=-1)
             for logit_chunk, target_chunk in zip(cat_chunks_pred, cat_chunks_gt):
                 target_idx = target_chunk.argmax(dim=-1)
-                cat_loss = (criterion2(logit_chunk, target_idx)).unsqueeze(-1)
-                # INCORRECT
-                # cat_loss = (criterion1(logit_chunk, target_idx)).unsqueeze(-1)
+
+                """THE LINE BELOW IS INCORRECT; CORRECT IT!"""
+                cat_loss = (criterion1(logit_chunk, target_idx)).unsqueeze(-1)
+
                 loss = torch.concat((loss, cat_loss), dim=-1)
 
             denoiser_loss = loss.mean()
